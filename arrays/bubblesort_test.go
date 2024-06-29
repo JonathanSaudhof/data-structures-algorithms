@@ -39,10 +39,10 @@ func TestBubbleSortWithIntegersShouldReturnSorted(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ans := BubbleSort(tt.input)
+			BubbleSort(tt.input)
 
-			if !slices.Equal(ans, tt.want) {
-				t.Errorf("not equal")
+			if !slices.Equal(tt.input, tt.want) {
+				t.Errorf("%v: %v is not equal to %v", tt.name, tt.input, tt.want)
 			}
 		})
 	}
@@ -67,9 +67,9 @@ func TestBubbleSortWithStringsShouldReturnSorted(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ans := BubbleSort(tt.input)
+			BubbleSort(tt.input)
 
-			if !slices.Equal(ans, tt.want) {
+			if !slices.Equal(tt.input, tt.want) {
 				t.Errorf("not equal")
 			}
 		})
