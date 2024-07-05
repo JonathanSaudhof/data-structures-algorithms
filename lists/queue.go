@@ -1,5 +1,11 @@
 package lists
 
+type Queue interface {
+	Enqueue()
+	Dequeue()
+	Peek()
+}
+
 type queueElement[T any] struct {
 	value T
 	next  *queueElement[T]
@@ -16,20 +22,45 @@ func NewQueue[T any]() *queue[T] {
 	return &queue[T]{}
 }
 
-//	tail  head
-//  []  =>  []
+func (q *queue[T]) Enqueue(value T) {
 
-func Enqueue[T any](q *queue[T], element T) {
-
-	newQueueElement := queueElement[T]{}
-	newQueueElement.value = element
-
-	if q.head == nil {
-		q.head = &newQueueElement
+	newQueueElement := queueElement[T]{
+		value: value,
 	}
 
-	if q.tail == nil {
+	var isFirstElement bool = q.head == nil && q.tail == nil
+
+	if isFirstElement {
+		q.head = &newQueueElement
+		q.tail = &newQueueElement
+	} else {
+		lastElement := q.tail
+		lastElement.prev = &newQueueElement
+		newQueueElement.next = lastElement
 		q.tail = &newQueueElement
 	}
 
+	q.size++
+}
+
+func (q *queue[T]) Dequeue() T {
+
+	var currElement queueElement[T] = *q.head
+
+	prevElement := currElement.prev
+	var isLastElement bool = prevElement == nil
+
+	if isLastElement {
+		q.tail = nil
+	} else {
+		prevElement.next = nil
+		q.head = prevElement
+	}
+
+	return currElement.value
+
+}
+
+func (q *queue[T]) Peek() T {
+	return q.head.value
 }
