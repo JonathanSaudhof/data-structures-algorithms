@@ -1,11 +1,5 @@
 package lists
 
-type Queue interface {
-	Enqueue()
-	Dequeue()
-	Peek()
-}
-
 type queueElement[T any] struct {
 	value T
 	next  *queueElement[T]
