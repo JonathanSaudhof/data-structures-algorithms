@@ -91,7 +91,7 @@ func TestPeek(t *testing.T) {
 		value, err := queue.Peek()
 
 		if err == nil {
-			t.Errorf("Peek should throw an error")
+			t.Errorf("Peek should return an error")
 		}
 
 		if value != 0 {
