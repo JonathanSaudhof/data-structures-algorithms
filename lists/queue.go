@@ -1,5 +1,7 @@
 package lists
 
+import "errors"
+
 type queueElement[T any] struct {
 	value T
 	next  *queueElement[T]
@@ -11,6 +13,8 @@ type queue[T any] struct {
 	tail *queueElement[T]
 	head *queueElement[T]
 }
+
+const noElementError = "queue has no elements"
 
 func NewQueue[T any]() *queue[T] {
 	return &queue[T]{}
@@ -37,7 +41,12 @@ func (q *queue[T]) Enqueue(value T) {
 	q.size++
 }
 
-func (q *queue[T]) Dequeue() T {
+func (q *queue[T]) Dequeue() (value T, err error) {
+
+	if q.head == nil {
+		err = errors.New(noElementError)
+		return
+	}
 
 	var currElement queueElement[T] = *q.head
 
@@ -46,15 +55,26 @@ func (q *queue[T]) Dequeue() T {
 
 	if isLastElement {
 		q.tail = nil
+		q.head = nil
 	} else {
 		prevElement.next = nil
 		q.head = prevElement
 	}
 
-	return currElement.value
+	value = currElement.value
+	q.size--
+
+	return
 
 }
 
-func (q *queue[T]) Peek() T {
-	return q.head.value
+func (q *queue[T]) Peek() (value T, err error) {
+
+	if q.head == nil {
+		err = errors.New(noElementError)
+		return
+	}
+
+	value = q.head.value
+	return
 }
