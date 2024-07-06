@@ -2,13 +2,7 @@ package lists
 
 import (
 	"testing"
-	"time"
 )
-
-type QueueTestType struct {
-	name string
-	age  time.Time
-}
 
 func TestEnqueueAndDequeue(t *testing.T) {
 
