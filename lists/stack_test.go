@@ -29,6 +29,10 @@ func TestPushAndPop(t *testing.T) {
 			t.Errorf("arrays are not equal, %v expected, %v", entries, dequeuedValues)
 		}
 
+		if stack.size != 0 {
+			t.Errorf("stack should be size of 0 but is %v", stack.size)
+		}
+
 	})
 
 }

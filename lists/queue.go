@@ -14,7 +14,7 @@ type queue[T any] struct {
 	head *queueElement[T]
 }
 
-const noElementError = "queue has no elements"
+const noQueueElementError = "queue has no elements"
 
 func NewQueue[T any]() *queue[T] {
 	return &queue[T]{}
@@ -44,7 +44,7 @@ func (q *queue[T]) Enqueue(value T) {
 func (q *queue[T]) Dequeue() (value T, err error) {
 
 	if q.head == nil {
-		err = errors.New(noElementError)
+		err = errors.New(noQueueElementError)
 		return
 	}
 
@@ -71,7 +71,7 @@ func (q *queue[T]) Dequeue() (value T, err error) {
 func (q *queue[T]) Peek() (value T, err error) {
 
 	if q.head == nil {
-		err = errors.New(noElementError)
+		err = errors.New(noQueueElementError)
 		return
 	}
 

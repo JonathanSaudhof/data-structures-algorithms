@@ -1,5 +1,7 @@
 package lists
 
+import "errors"
+
 type stackElement[T any] struct {
 	value T
 	prev  *stackElement[T]
@@ -9,6 +11,8 @@ type stack[T any] struct {
 	size int
 	head *stackElement[T]
 }
+
+const noStackElementError = "stack has no elements"
 
 func NewStack[T any]() *stack[T] {
 	return &stack[T]{}
@@ -32,7 +36,12 @@ func (s *stack[T]) Push(value T) {
 	s.size++
 }
 
-func (s *stack[T]) Pop() T {
+func (s *stack[T]) Pop() (value T, err error) {
+
+	if s.head == nil {
+		err = errors.New(noStackElementError)
+		return
+	}
 
 	var currElement stackElement[T] = *s.head
 	prevElement := currElement.prev
@@ -45,7 +54,10 @@ func (s *stack[T]) Pop() T {
 		s.head = prevElement
 	}
 
-	return currElement.value
+	s.size--
+
+	value = currElement.value
+	return
 
 }
 
