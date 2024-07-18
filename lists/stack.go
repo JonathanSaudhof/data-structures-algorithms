@@ -19,7 +19,6 @@ func NewStack[T any]() *stack[T] {
 }
 
 func (s *stack[T]) Push(value T) {
-
 	newStackElement := stackElement[T]{
 		value: value,
 	}
@@ -37,7 +36,6 @@ func (s *stack[T]) Push(value T) {
 }
 
 func (s *stack[T]) Pop() (value T, err error) {
-
 	if s.head == nil {
 		err = errors.New(noStackElementError)
 		return
@@ -58,7 +56,6 @@ func (s *stack[T]) Pop() (value T, err error) {
 
 	value = currElement.value
 	return
-
 }
 
 func (s *stack[T]) Top() T {

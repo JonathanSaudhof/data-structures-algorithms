@@ -5,11 +5,9 @@ import (
 )
 
 func TestPushAndPop(t *testing.T) {
-
-	var stack = NewStack[int]()
+	stack := NewStack[int]()
 
 	t.Run("Queue Should Enqueue and Dequeue correctly", func(t *testing.T) {
-
 		entries := [5]int{1, 2, 3, 4, 5}
 		for i, v := range entries {
 			stack.Push(v)
@@ -21,7 +19,8 @@ func TestPushAndPop(t *testing.T) {
 
 		var dequeuedValues [5]int
 		for i := range entries {
-			dequeuedValues[i] = stack.Pop()
+			value, _ := stack.Pop()
+			dequeuedValues[i] = value
 		}
 
 		expectedEntries := [5]int{5, 4, 3, 2, 1}
@@ -32,15 +31,12 @@ func TestPushAndPop(t *testing.T) {
 		if stack.size != 0 {
 			t.Errorf("stack should be size of 0 but is %v", stack.size)
 		}
-
 	})
-
 }
 
 func TestTop(t *testing.T) {
-
 	t.Run("Queue Peek should return correct value", func(t *testing.T) {
-		var stack = NewStack[int]()
+		stack := NewStack[int]()
 		stack.Push(1)
 		stack.Push(2)
 
@@ -55,5 +51,4 @@ func TestTop(t *testing.T) {
 			t.Errorf("should be size of %v but is %v instead", 2, stackSize)
 		}
 	})
-
 }
