@@ -1,10 +1,11 @@
 package arrays
 
 type RingBuffer[T any] struct {
-	size int
-	buf  []*T
-	head Index
-	tail Index
+	size   int
+	buf    []*T
+	read   Index
+	write  Index
+	isFull bool
 }
 
 type Index struct {
@@ -13,64 +14,71 @@ type Index struct {
 }
 
 func (i *Index) next() {
-	i.index = (i.index + 1) % (i.size - 1)
+	i.index = (i.index + 1) % (i.size)
 }
 
 func NewRingBuffer[T any](size int) *RingBuffer[T] {
 	return &RingBuffer[T]{
-		size: size,
-		buf:  make([]*T, size),
-		head: Index{index: 0, size: size},
-		tail: Index{index: -1, size: size},
+		size:   size,
+		buf:    make([]*T, size),
+		read:   Index{index: 0, size: size},
+		write:  Index{index: -1, size: size},
+		isFull: false,
 	}
 }
 
 func (r *RingBuffer[T]) Put(value T) {
-	if r.tail.index == -1 {
-		r.tail.next()
+	if r.IsFull() {
+		r.read.next()
 	}
 
-	r.buf[r.tail.index] = &value
-	r.tail.next()
-
-	if r.tail.index == r.head.index {
-		r.head.next()
+	if r.IsEmpty() {
+		r.write.next()
 	}
-	// if the head is at the same index as the tail, move the head
-	// now the last element will be overwritten
+
+	r.buf[r.write.index] = &value
+	r.write.next()
 }
 
 func (r *RingBuffer[T]) Pop() (value T) {
-	value = *r.buf[r.head.index]
-	if r.buf[r.head.index] == nil {
+	value = *r.buf[r.read.index]
+
+	if r.buf[r.read.index] == nil {
 		return value
 	}
-	r.buf[r.head.index] = nil
-	r.head.next()
+	r.buf[r.read.index] = nil
+	r.read.next()
 	return value
 }
 
-// 1 2 3 4 5
-// - - h t -
-// 0 1 2 3 4
-// t - h - -
-// 0 1 2 3 4
-func (r *RingBuffer[T]) Capacity() int {
-	if r.head.index == -1 {
+func (r *RingBuffer[T]) Length() int {
+	if r.IsEmpty() {
+		return 0
+	}
+
+	if r.IsFull() {
 		return r.size
 	}
 
-	if r.head.index < r.tail.index {
-		return r.size - r.tail.index - r.head.index
+	if r.write.index > r.read.index {
+		return r.write.index - r.read.index
 	}
 
-	return 0
+	return r.size - r.read.index + r.write.index
+}
+
+func (r *RingBuffer[T]) Capacity() int {
+	return r.size - r.Length()
 }
 
 func (r *RingBuffer[T]) IsEmpty() bool {
-	return r.tail.index == -1
+	return r.write.index == -1
 }
 
 func (r *RingBuffer[T]) IsFull() bool {
-	return r.tail.index == r.head.index
+	return r.write.index == r.read.index
+}
+
+func (r *RingBuffer[T]) Peek() T {
+	return *r.buf[r.read.index]
 }
