@@ -18,6 +18,10 @@ func (i *Index) next() {
 }
 
 func NewRingBuffer[T any](size int) *RingBuffer[T] {
+	return ringBufferInit[T](size)
+}
+
+func ringBufferInit[T any](size int) *RingBuffer[T] {
 	return &RingBuffer[T]{
 		size:   size,
 		buf:    make([]*T, size),
@@ -38,17 +42,30 @@ func (r *RingBuffer[T]) Put(value T) {
 
 	r.buf[r.write.index] = &value
 	r.write.next()
+
+	if r.write.index == r.read.index {
+		r.isFull = true
+	}
 }
 
 func (r *RingBuffer[T]) Pop() (value T) {
 	value = *r.buf[r.read.index]
-
-	if r.buf[r.read.index] == nil {
-		return value
-	}
 	r.buf[r.read.index] = nil
 	r.read.next()
+
+	if r.isFull {
+		r.isFull = false
+	}
+
+	if r.write.index == r.read.index {
+		r.setEmpty()
+	}
+
 	return value
+}
+
+func (r *RingBuffer[T]) setEmpty() {
+	r.write.index = -1
 }
 
 func (r *RingBuffer[T]) Length() int {
@@ -67,6 +84,15 @@ func (r *RingBuffer[T]) Length() int {
 	return r.size - r.read.index + r.write.index
 }
 
+func (r *RingBuffer[T]) Flush() []T {
+	values := make([]T, r.Length())
+	for idx := range values {
+		values[idx] = r.Pop()
+	}
+
+	return values
+}
+
 func (r *RingBuffer[T]) Capacity() int {
 	return r.size - r.Length()
 }
@@ -76,7 +102,7 @@ func (r *RingBuffer[T]) IsEmpty() bool {
 }
 
 func (r *RingBuffer[T]) IsFull() bool {
-	return r.write.index == r.read.index
+	return r.isFull
 }
 
 func (r *RingBuffer[T]) Peek() T {

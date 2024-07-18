@@ -78,6 +78,89 @@ func TestRingBuffer_Pop_ShouldRemoveElement(t *testing.T) {
 	})
 }
 
+func TestRingBuffer_Flush_ShouldReturnAllValuesAndReset(t *testing.T) {
+	ringBuffer := createTestBuffer()
+
+	t.Run("Should pop", func(t *testing.T) {
+		list := []int{1, 2, 3, 4, 5}
+
+		fillBuffer(ringBuffer, list, t)
+
+		// remove the first element
+		elements := ringBuffer.Flush()
+
+		for idx, element := range elements {
+
+			expectedValue := list[idx]
+
+			if element != expectedValue {
+				t.Fatalf("Expected value %v, got %v", element, expectedValue)
+			}
+
+			if len(elements) != 5 {
+				t.Fatalf("Expected 5, got %v", len(elements))
+			}
+
+			if ringBuffer.Length() != 0 {
+				t.Fatalf("Expected Length to be 0, got %v", ringBuffer.Length())
+			}
+
+			if ringBuffer.IsEmpty() == false {
+				t.Fatalf("Expected ring buffer to be empty")
+			}
+
+			if ringBuffer.IsFull() == true {
+				t.Fatalf("Expected ring buffer not to be full")
+			}
+
+		}
+	})
+}
+
+func TestRingBuffer_FlushNoFullBuffer_ShouldReturnAllValuesAndReset(t *testing.T) {
+	ringBuffer := createTestBuffer()
+
+	t.Run("Should pop", func(t *testing.T) {
+		list := []int{1, 2, 3}
+
+		for _, value := range list {
+			ringBuffer.Put(value)
+		}
+
+		if ringBuffer.IsFull() == true {
+			t.Fatalf("Expected ring buffer not to be full")
+		}
+
+		if ringBuffer.Capacity() != 2 {
+			t.Fatalf("Expected 2, got %v", ringBuffer.Capacity())
+		}
+
+		if ringBuffer.Length() != 3 {
+			t.Fatalf("Expected 3, got %v", ringBuffer.Length())
+		}
+
+		// remove the first element
+		elements := ringBuffer.Flush()
+
+		for idx, element := range elements {
+
+			expectedValue := list[idx]
+
+			if element != expectedValue {
+				t.Fatalf("Expected value %v, got %v", element, expectedValue)
+			}
+		}
+
+		if ringBuffer.Length() != 0 {
+			t.Fatalf("Expected 0, got %v", ringBuffer.Length())
+		}
+
+		if ringBuffer.IsEmpty() == false {
+			t.Fatalf("Expected ring buffer to be empty")
+		}
+	})
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 func fillBuffer(r *arrays.RingBuffer[int], list []int, t *testing.T) {
