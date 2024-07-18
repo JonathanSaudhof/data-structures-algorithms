@@ -26,6 +26,10 @@ of the lists.
 - [x] [Two Crystal Ball Problem](./arrays/bubblesort.go)
 - [ ] Trapping Rain Water Problem
 
+### Abstract data structures
+
+- [x] [Ring Buffer](./arrays/ringbuffer.go)
+
 ## 2. Linked Lists
 
 Linked Lists have there advantages when it comes to removing data
