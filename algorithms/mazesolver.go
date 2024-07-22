@@ -27,20 +27,21 @@ func SolveMaze(maze [][]string) []Point {
 		visited[i] = make([]bool, len(maze[0]))
 	}
 
-	// Solve the maze
-	walk(&maze, &visited, start, end)
+	walk(&maze, &visited, &path, start, end)
 
 	return path
 }
 
 func findStartAndEnd(maze [][]string) (start Point, end Point) {
-	for i, row := range maze {
-		for j, piece := range row {
+	for x, row := range maze {
+		for y, piece := range row {
 			if piece == START {
-				start = Point{i, j}
+				start = Point{
+					y, x,
+				}
 			}
 			if piece == END {
-				end = Point{i, j}
+				end = Point{y, x}
 			}
 		}
 	}
@@ -52,50 +53,79 @@ func findStartAndEnd(maze [][]string) (start Point, end Point) {
 	return
 }
 
-const dir = [][]int{
-	{1, 0},
-	{0, 1},
-	{-1, 0},
-	{0, -1},
+var dir = [][]int{
+	{-1, 0}, // TOP
+	{0, 1},  // RIGHT
+	{1, 0},  // BOTTOM
+	{0, -1}, // LEFT
 }
 
 func walk(maze *[][]string, visited *[][]bool, path *[]Point, current Point, end Point) bool {
-	isEnd := current == end
+	isEnd := current.Column == end.Column && current.Row == end.Row
 
 	if isEnd {
 		*path = append(*path, current)
+		fmt.Println("Found end", current)
 		return true
 	}
 
-	isOutOfColumn := current.Column > len(*maze) || current.Column < 0
-	isOutOfRow := current.Row > len((*maze)[current.Column]) || current.Row < 0
-	isOutOfBoard := isOutOfColumn || isOutOfRow
+	isOutOfBoard := current.Column > len(*maze) ||
+		current.Column < 0 ||
+		current.Row > len((*maze)[0]) ||
+		current.Row < 0
 
 	if isOutOfBoard {
-		fmt.Println("Out of board")
+		fmt.Println("Out of board", current)
 		return false
 	}
 
 	isWall := (*maze)[current.Row][current.Column] == WALL
 
 	if isWall {
-		fmt.Println("Hit wall")
+		fmt.Println("Hit wall", current)
 		return false
 	}
 
-	var hasAlreadyBeenVisited bool = (*visited)[current.Column][current.Row]
+	var hasAlreadyBeenVisited bool = (*visited)[current.Row][current.Column]
 
 	if hasAlreadyBeenVisited {
-		fmt.Println("Already visited")
+		fmt.Println("Already visited", current)
 		return false
 	}
 
-	for _, value := range dir {
-		next := current.
-			walk(maze, visited, path)
+	(*visited)[current.Row][current.Column] = true
+	*path = append(*path, current)
+	fmt.Println("Remember path", current)
+
+	for _, dir := range dir {
+		next := Point{
+			Column: current.Column + dir[1],
+			Row:    current.Row + dir[0],
+		}
+
+		if walk(maze, visited, path, next, end) {
+			return true
+		}
 	}
-
-	(*visited)[current.Column][current.Row] = true
-
+	*path = (*path)[:len(*path)-1]
 	return false
+}
+
+func PrintMaze(maze *[][]string, path *[]Point) {
+	for y, row := range *maze {
+		for x, piece := range row {
+			isPath := false
+			for _, path := range *path {
+				if path.Column == x && path.Row == y {
+					isPath = true
+				}
+			}
+			if isPath {
+				fmt.Print("X")
+			} else {
+				fmt.Print(piece)
+			}
+		}
+		fmt.Println()
+	}
 }
