@@ -20,6 +20,7 @@ Took the chance to try out go the first time.
 ### Other Algorithms
 
 - [x] [Two Crystal Ball Problem](./arrays/bubblesort.go)
+- [x] [Recursive Maze Solver](./arrays/mazesolver.go)
 - [ ] Trapping Rain Water Problem
 
 ### Abstract data structures

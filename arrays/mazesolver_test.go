@@ -1,9 +1,9 @@
-package algorithms_test
+package arrays_test
 
 import (
 	"testing"
 
-	"portfolio/das/algorithms"
+	"portfolio/das/arrays"
 )
 
 func TestMazeSolver_ReachAbleEnd_ShouldReturnPath(t *testing.T) {
@@ -18,7 +18,7 @@ func TestMazeSolver_ReachAbleEnd_ShouldReturnPath(t *testing.T) {
 		{"#", "#", "#", "#", "#", "#", "#", "#", "#"},
 	}
 
-	expectedPath := []algorithms.Point{
+	expectedPath := []arrays.Point{
 		{1, 1},
 		{2, 1},
 		{3, 1},
@@ -44,9 +44,9 @@ func TestMazeSolver_ReachAbleEnd_ShouldReturnPath(t *testing.T) {
 	}
 
 	t.Run("Maze solver should return the path to the end", func(t *testing.T) {
-		path := algorithms.SolveMaze(maze)
+		path := arrays.SolveMaze(maze)
 
-		algorithms.PrintMaze(&maze, &path)
+		arrays.PrintMaze(&maze, &path)
 
 		if len(path) != len(expectedPath) {
 			t.Fatalf("Expected path to be %v, but got %v", expectedPath, path)
@@ -69,9 +69,9 @@ func TestMazeSolver_NoReachAbleEnd_ShouldReturnEmptyPath(t *testing.T) {
 	}
 
 	t.Run("Maze solver should return an empty path", func(t *testing.T) {
-		path := algorithms.SolveMaze(maze)
+		path := arrays.SolveMaze(maze)
 
-		algorithms.PrintMaze(&maze, &path)
+		arrays.PrintMaze(&maze, &path)
 
 		if len(path) != 0 {
 			t.Fatalf("Expected path to be empty, but got %v", path)
