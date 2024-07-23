@@ -14,7 +14,7 @@ Took the chance to try out go the first time.
 ### Sorting Algorithms
 
 - [x] [Bubble Sort](./arrays/bubblesort.go)
-- [ ] Quick Sort
+- [x] [Quick Sort](./arrays/quicksort.go)
 - [ ] Merge Sort
 
 ### Other Algorithms
