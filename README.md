@@ -31,3 +31,4 @@ Took the chance to try out go the first time.
 
 - [x] [Queue](./lists/queue.go)
 - [x] [Stack](./lists/stack.go)
+- [x] [Double LinkedList](./lists/doublelinkedlist.go)
